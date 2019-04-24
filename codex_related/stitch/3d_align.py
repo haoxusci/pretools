@@ -27,14 +27,19 @@ def test_fft_shift(imagea, imageb):
     b = np.absolute(tt)
     detection_m = (tt) /b
     new_data = np.fft.ifftn(detection_m).real
-    the_index = np.unravel_index(np.argmax(new_data), new_data.shape)
-    x_shape, y_shape = imagea.shape
-    x_index, y_index = the_index
-    if x_index > x_shape/2:
-        x_index = x_index - x_shape
-    if y_index > y_shape/2:
-        y_index = y_index - y_shape
-    return (np.amax(new_data), x_index, y_index)
+    #the_index = np.unravel_index(np.argmax(new_data), new_data.shape)
+    the_index = np.argwhere(new_data==np.amax(new_data))
+    print(the_index.shape, the_index)
+    if the_index.shape[0]==1:
+        print("one max point")
+        the_index = the_index[0]
+        x_shape, y_shape = imagea.shape
+        x_index, y_index = the_index
+        '''if x_index > x_shape/2:
+            x_index = x_index - x_shape
+        if y_index > y_shape/2:
+            y_index = y_index - y_shape'''
+        return (np.amax(new_data), x_index, y_index)
 
 
 def create_images(image):
@@ -42,7 +47,7 @@ def create_images(image):
     a, b = image.shape
     imagea = image[4:, 20:]
     imageb = image[:-4, :-20]
-    print(test_fft_shift(imageb, imagea))
+    print(test_fft_shift(imagea, imageb))
 
 
 def main():
